@@ -1,0 +1,14 @@
+﻿<Application x:Class="DressUpGame.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DressUpGame"
+             StartupUri="views/MainWindow.xaml">
+    <Application.Resources>
+        <!--<FontFamily x:Key="DefaultFont">"pack://application:,,,/DressUpGame;component/fonts/SilkScreen-Regular.ttf#SilkScreen"</FontFamily>
+                    <Setter Property="FontFamily" Value="pack://application:,,,/DressUpGame;component/fonts/Jersey10-Regular.ttf#Jersey 10"/>
+-->
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="pack://application:,,,/DressUpGame;component/assets/fonts/SilkScreen-Regular.ttf#SilkScreen"/>
+        </Style>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,56 @@
+﻿<Window x:Class="DressUpGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:DressUpGame.models"
+        Title="Cool Dress Up Game" Height="480" Width="610">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <!-- 0 -->
+            <RowDefinition Height="100"/>
+            <!-- 1 -->
+            <RowDefinition Height="100"/>
+            <!-- 2 -->
+            <RowDefinition Height="100"/>
+            <!-- 3 -->
+            <RowDefinition Height="100"/>
+            <!-- 4 -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="210"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Text="Event Information:" FontSize="18" FontWeight="Bold" Margin="0px 3px 0px 0px"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" x:Name="eventInfoTextBlock" TextWrapping="Wrap" Margin="10px 23px 10px 10px"/>
+
+        <Image Grid.Row="1" Grid.Column="0" Source="../assets/outfits/hat_2.png" Width="100" Height="100" MouseDown="AccessoriesImage_MouseDown" local:CroppingHelper.CropRectangle="0,0,150,100"/>
+        <Image Grid.Row="1" Grid.Column="1" Source="../assets/outfits/hat_3.png" Width="100" Height="100" MouseDown="AccessoriesImage_MouseDown" local:CroppingHelper.CropRectangle="0,0,150,100"/>
+        <Image Grid.Row="1" Grid.Column="2" Source="../assets/outfits/hat_4.png" Width="100" Height="100" MouseDown="AccessoriesImage_MouseDown" local:CroppingHelper.CropRectangle="0,0,150,100"/>
+
+        <Image Grid.Row="2" Grid.Column="0" Source="../assets/outfits/shirt_2.png" Width="100" Height="100" MouseDown="ShirtImage_MouseDown" local:CroppingHelper.CropRectangle="0,150,150,100"/>
+        <Image Grid.Row="2" Grid.Column="1" Source="../assets/outfits/shirt_3.png" Width="100" Height="100" MouseDown="ShirtImage_MouseDown" local:CroppingHelper.CropRectangle="0,150,150,100"/>
+        <Image Grid.Row="2" Grid.Column="2" Source="../assets/outfits/shirt_4.png" Width="100" Height="100" MouseDown="ShirtImage_MouseDown" local:CroppingHelper.CropRectangle="0,150,150,120"/>
+
+        <Image Grid.Row="3" Grid.Column="0" Source="../assets/outfits/pants_2.png" Width="100" Height="100" MouseDown="PantsImage_MouseDown" local:CroppingHelper.CropRectangle="0,200,150,100"/>
+        <Image Grid.Row="3" Grid.Column="1" Source="../assets/outfits/pants_3.png" Width="100" Height="100" MouseDown="PantsImage_MouseDown" local:CroppingHelper.CropRectangle="0,200,150,100"/>
+        <Image Grid.Row="3" Grid.Column="2" Source="../assets/outfits/pants_4.png" Width="100" Height="100" MouseDown="PantsImage_MouseDown" local:CroppingHelper.CropRectangle="0,200,150,100"/>
+
+        <Canvas Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Name="canvas" Width="160" Height="320" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Image Name="characterImage" Source="../assets/characters/body_2.png" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Image Name="hatImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Image Name="earringsImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Image Name="pantsImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Image Name="shirtImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Image Name="shoesImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Canvas>
+
+        <Button Grid.Row="4" Grid.Column ="0" Content="My look" Width="90" Height="20" Margin="0px 0px 0px 25px" Click="DressUpButton_Click" Cursor="Hand"/>
+        <Button Grid.Row="4" Grid.Column ="1" Content="I'm ready!" Width="90" Height="20" Margin="0px 0px 0px 20px" Click="ImReadyButton_Click" Cursor="Hand"/>
+        <Button Grid.Row="4" Grid.Column ="2" Content="Give a hint!" Width="100" Height="20" Margin="0px 0px 0px 20px" Click="HintButton_Click" Cursor="Hand"/>
+    </Grid>
+</Window>
