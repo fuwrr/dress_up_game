@@ -27,7 +27,8 @@ namespace DressUpGame.models
     {
         Formal,
         Casual,
-        Cool
+        Cool,
+        None
     }
 
     public interface IClothing
@@ -251,6 +252,127 @@ namespace DressUpGame.models
         public Earrings CreateEarrings()
         {
             return new FormalEarrings();
+        }
+    }
+
+    public class DressUpFacade
+    {
+        private readonly Game game;
+        private readonly Player player;
+        private OutfitBuilder builder;
+        private ClothingEvent currentEvent;
+
+        public DressUpFacade(Game game, Player player)
+        {
+            this.game = game;
+            this.player = player;
+            builder = new OutfitBuilder();
+            currentEvent = game.GetRandomEvent();
+        }
+
+        public void DressUp()
+        {
+            List<IClothing> outfit = builder.Build();
+            player.SetCurrentOutfit(outfit);
+            player.DressUpForEvent(game.GetRandomEvent());
+        }
+
+        public int GetScore()
+        {
+            return player.GetScore();
+        }
+
+        public string GetOutfitDescription(string title)
+        {
+            return $"{title}\n\n{player.GetOutfitDescription()}";
+        }
+
+        public ClothingEvent GetRandomEvent()
+        {
+            currentEvent = game.GetRandomEvent();
+            return currentEvent;
+        }
+
+        public string GetCurrentEventDescription()
+        {
+            ClothingEvent randomEvent = game.GetRandomEvent();
+            return $"{randomEvent.Name} - {randomEvent.Description}";
+        }
+
+        public ClothingStyle GetCurrentEventStyle()
+        {
+            return game.GetRandomEvent().Style;
+        }
+
+        public void SetShirt(ClothingStyle style)
+        {
+            switch (style)
+            {
+                case ClothingStyle.Casual:
+                    builder.SetShirt(new CasualShirt());
+                    break;
+                case ClothingStyle.Formal:
+                    builder.SetShirt(new FormalShirt());
+                    break;
+                case ClothingStyle.Cool:
+                    builder.SetShirt(new CoolShirt());
+                    break;
+                default:
+                    builder.SetShirt(null);
+                    break;
+            }
+        }
+
+        public void SetPants(ClothingStyle style)
+        {
+            switch (style)
+            {
+                case ClothingStyle.Casual:
+                    builder.SetPants(new CasualPants());
+                    break;
+                case ClothingStyle.Formal:
+                    builder.SetPants(new FormalPants());
+                    break;
+                case ClothingStyle.Cool:
+                    builder.SetPants(new CoolPants());
+                    break;
+                default:
+                    builder.SetPants(null);
+                    break;
+            }
+        }
+
+        public void SetAccessories(ClothingStyle style)
+        {
+            IAccessoryFactory factory;
+            switch (style)
+            {
+                case ClothingStyle.Casual:
+                    factory = new CasualAccessoryFactory();
+                    break;
+                case ClothingStyle.Formal:
+                    factory = new FormalAccessoryFactory();
+                    break;
+                case ClothingStyle.Cool:
+                    factory = new CoolAccessoryFactory();
+                    break;
+                default:
+                    factory = null;
+                    break;
+            }
+
+            if (factory != null)
+            {
+                builder.SetShoes(factory.CreateShoes());
+                builder.SetHat(factory.CreateHat());
+                builder.SetEarrings(factory.CreateEarrings());
+            }
+            else
+            {
+                builder.SetShoes(null);
+                builder.SetHat(null);
+                builder.SetEarrings(null);
+            }
         }
     }
 
