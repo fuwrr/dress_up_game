@@ -8,18 +8,19 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.IO;
 using DressUpGame.models;
-//using static System.Net.Mime.MediaTypeNames;
 
 namespace DressUpGame
 {
     public partial class MainWindow : Window
     {
         private readonly DressUpFacade facade;
+        private readonly IDesigner designer;
 
         public MainWindow()
         {
             InitializeComponent();
             facade = new DressUpFacade(new Game(), Player.GetInstance());
+            designer = new ClassicDesigner(); // Choose your initial designer
             RefreshUI();
         }
 
@@ -32,25 +33,25 @@ namespace DressUpGame
         private void DressUpButton_Click(object sender, RoutedEventArgs e)
         {
             facade.DressUp();
-            ShowDescriptionWindow("Outfit Description");
+            ClothingDescriptionWindow descriptionWindow = new(designer.GetDescription(facade.GetOutfitDescription()));
+            descriptionWindow.ShowDialog();
         }
 
         private void ImReadyButton_Click(object sender, RoutedEventArgs e)
         {
             facade.DressUp();
             int score = facade.GetScore();
-            ShowDescriptionWindow($"Score: {score}");
+            ClothingDescriptionWindow descriptionWindow = new($"Score: {score}");
+            descriptionWindow.ShowDialog();
             RefreshUI();
         }
 
         private void HintButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowDescriptionWindow($"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\nAlso important note:\n\nwhen you choose hat - it also automatically chooses earrings and shoes that are can be +1 point!");
-        }
-
-        private void ShowDescriptionWindow(string title)
-        {
-            ClothingDescriptionWindow descriptionWindow = new(facade.GetOutfitDescription(title));
+            ClothingDescriptionWindow descriptionWindow = new(
+                $"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\n" +
+                "Also important note:\n\n" +
+                "When you choose a hat, it also automatically chooses earrings and shoes that can be +1 point!");
             descriptionWindow.ShowDialog();
         }
 

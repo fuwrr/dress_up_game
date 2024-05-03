@@ -76,6 +76,16 @@ namespace DressUpGame.models
             return this;
         }
 
+        public IClothing GetShirt()
+        {
+            return shirt;
+        }
+
+        public IClothing GetPants()
+        {
+            return pants;
+        }
+
         public List<IClothing> Build()
         {
             List<IClothing> outfit = new();
@@ -257,9 +267,9 @@ namespace DressUpGame.models
 
     public class DressUpFacade
     {
-        private readonly Game game;
-        private readonly Player player;
-        private OutfitBuilder builder;
+        protected readonly Game game;
+        protected readonly Player player;
+        protected OutfitBuilder builder;
         private ClothingEvent currentEvent;
 
         public DressUpFacade(Game game, Player player)
@@ -270,11 +280,11 @@ namespace DressUpGame.models
             currentEvent = game.GetRandomEvent();
         }
 
-        public void DressUp()
+        virtual public void DressUp()
         {
             List<IClothing> outfit = builder.Build();
             player.SetCurrentOutfit(outfit);
-            player.DressUpForEvent(game.GetRandomEvent());
+            player.DressUpForEvent(currentEvent);
         }
 
         public int GetScore()
@@ -282,9 +292,9 @@ namespace DressUpGame.models
             return player.GetScore();
         }
 
-        public string GetOutfitDescription(string title)
+        virtual public string GetOutfitDescription()
         {
-            return $"{title}\n\n{player.GetOutfitDescription()}";
+            return $"\n{player.GetOutfitDescription()}";
         }
 
         public ClothingEvent GetRandomEvent()
@@ -295,13 +305,12 @@ namespace DressUpGame.models
 
         public string GetCurrentEventDescription()
         {
-            ClothingEvent randomEvent = game.GetRandomEvent();
-            return $"{randomEvent.Name} - {randomEvent.Description}";
+            return $"{currentEvent.Name} - {currentEvent.Description}";
         }
 
         public ClothingStyle GetCurrentEventStyle()
         {
-            return game.GetRandomEvent().Style;
+            return currentEvent.Style;
         }
 
         public void SetShirt(ClothingStyle style)
@@ -376,5 +385,64 @@ namespace DressUpGame.models
         }
     }
 
-}
+    //Decorators for 5 lab, actually unnecessary
+    public class DesignerDecorator : DressUpFacade
+    {
+        private readonly IDesigner designer;
 
+        public DesignerDecorator(IDesigner designer, Game game, Player player) : base(game, player)
+        {
+            this.designer = designer;
+        }
+
+        public override void DressUp()
+        {
+            base.DressUp();
+            designer.RefineOutfit(builder);
+        }
+
+        public override string GetOutfitDescription()
+        {
+            return designer.GetDescription(base.GetOutfitDescription());
+        }
+    }
+
+    public interface IDesigner
+    {
+        void RefineOutfit(OutfitBuilder builder);
+        string GetDescription(string description);
+    }
+
+    public class ClassicDesigner : IDesigner
+    {
+        public void RefineOutfit(OutfitBuilder builder)
+        {
+            if (builder.GetShirt() is FormalShirt)
+            {
+                builder.SetEarrings(null); // Classic style avoids earrings with formal shirts
+            }
+        }
+
+        public string GetDescription(string description)
+        {
+            return description + "\nDesigned with a classic touch.";
+        }
+    }
+
+    public class TrendyDesigner : IDesigner
+    {
+        public void RefineOutfit(OutfitBuilder builder)
+        {
+            if (builder.GetPants() is CasualPants)
+            {
+                builder.SetHat(null); // Trendy style avoids hats with casual pants
+            }
+        }
+
+        public string GetDescription(string description)
+        {
+            return description + "\nDesigned with a trendy flair.";
+        }
+    }
+
+}
