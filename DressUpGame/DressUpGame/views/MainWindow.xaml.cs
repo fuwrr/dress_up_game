@@ -8,19 +8,18 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.IO;
 using DressUpGame.models;
+//using static System.Net.Mime.MediaTypeNames;
 
 namespace DressUpGame
 {
     public partial class MainWindow : Window
     {
         private readonly DressUpFacade facade;
-        private readonly IDesigner designer;
 
         public MainWindow()
         {
             InitializeComponent();
             facade = new DressUpFacade(new Game(), Player.GetInstance());
-            designer = new ClassicDesigner(); // Choose your initial designer
             RefreshUI();
         }
 
@@ -33,7 +32,7 @@ namespace DressUpGame
         private void DressUpButton_Click(object sender, RoutedEventArgs e)
         {
             facade.DressUp();
-            ClothingDescriptionWindow descriptionWindow = new(designer.GetDescription(facade.GetOutfitDescription()));
+            ClothingDescriptionWindow descriptionWindow = new(facade.GetOutfitDescription());
             descriptionWindow.ShowDialog();
         }
 
@@ -48,10 +47,7 @@ namespace DressUpGame
 
         private void HintButton_Click(object sender, RoutedEventArgs e)
         {
-            ClothingDescriptionWindow descriptionWindow = new(
-                $"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\n" +
-                "Also important note:\n\n" +
-                "When you choose a hat, it also automatically chooses earrings and shoes that can be +1 point!");
+            ClothingDescriptionWindow descriptionWindow = new($"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\nAlso important note:\n\nwhen you choose hat - it also automatically chooses earrings and shoes that are can be +1 point!");
             descriptionWindow.ShowDialog();
         }
 
