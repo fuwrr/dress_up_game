@@ -29,8 +29,6 @@ namespace DressUpGame.models
                 }
             }
         }
-
-        //public static Dictionary<CleanEditionShirt, int> RemainingStock => new Dictionary<CleanEditionShirt, int>(Stock);
     }
 
 
@@ -59,7 +57,7 @@ namespace DressUpGame.models
             return CleanEditionShirtManager.GetStock(_shirt) > 0;
         }
 
-        public IClothing AddToOutfit()
+        public IClothing? AddToOutfit()
         {
             if (IsInStock())
             {

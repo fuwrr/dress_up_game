@@ -5,70 +5,94 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace DressUpGame.models
 {
+    //Shirt + Pants + (Shoes + Hat + Earrings)
+
+
+    //-----------------------------------CASUAL STYLE------------------------------------------------
     public class CasualShirt : Shirt
     {
-        public override string Name => "Favourite childhood T-shirt";
-        public override string Description => "XXL size, with holes and has car drawing on it";
+        public override string Name => "Hoodie";
+        public override string Description => "XXL size, sticky, but feels right (you're discusting)";
         public override ClothingStyle Style => ClothingStyle.Casual;
     }
-    public class CoolShirt : Shirt
-    {
-        public override string Name => "Dad's jacket";
-        public override string Description => "Looking excentric since '95";
-        public override ClothingStyle Style => ClothingStyle.Cool;
-    }
-    public class FormalShirt : Shirt
-    {
-        public override string Name => "Suit";
-        public override string Description => "Suit up! for formal meetings";
-        public override ClothingStyle Style => ClothingStyle.Formal;
-    }
-
     public class CasualPants : Pants
     {
         public override string Name => "Old sweatpants";
-        public override string Description => "The most comfortable thing ever";
+        public override string Description => "Turkish quality for all these decades";
         public override ClothingStyle Style => ClothingStyle.Casual;
     }
-
-    public class CoolPants : Pants
-    {
-        public override string Name => "New baggy blue jeans";
-        public override string Description => "Turkish quality, all youngsters are wearing these, I promise";
-        public override ClothingStyle Style => ClothingStyle.Cool;
-    }
-
-    public class FormalPants : Pants
-    {
-        public override string Name => "Suit Pants";
-        public override string Description => "I almost can't even see that they're second-hand";
-        public override ClothingStyle Style => ClothingStyle.Formal;
-    }
-
     public class CasualShoes : Shoes
     {
-        public override string Name => "Crocs";
+        public override string Name => "Pink crocs";
         public override string Description => "Squecking with casuality";
         public override ClothingStyle Style => ClothingStyle.Casual;
     }
-    public class CoolShoes : Shoes
+    public class CasualHat : Hat
     {
-        public override string Name => "StingSteps";
-        public override string Description => "Bee shoes. Cool";
-        public override ClothingStyle Style => ClothingStyle.Cool;
+        public override string Name => "Knitted beanie";
+        public override string Description => "Quite worn out, reminds salmon slice, but very warm";
+        public override ClothingStyle Style => ClothingStyle.Casual;
+    }
+    public class CasualEarrings : Earrings
+    {
+        public override string Name => "Silver chain and bracelet";
+        public override string Description => "You've worn it everyday for last 3 years";
+        public override ClothingStyle Style => ClothingStyle.Casual;
     }
 
+    //----------------------------------------FORMAL STYLE------------------------------------------------
+    public class FormalShirt : Shirt
+    {
+        public override string Name => "Suit";
+        public override string Description => "Looks rich (you will be eaten first)";
+        public override ClothingStyle Style => ClothingStyle.Formal;
+    }
+    public class FormalPants : Pants
+    {
+        public override string Name => "Suit Pants";
+        public override string Description => "Checked straigh pants for aristocrates";
+        public override ClothingStyle Style => ClothingStyle.Formal;
+    }
     public class FormalShoes : Shoes
     {
         public override string Name => "Suede Shoes";
         public override string Description => "Elegant shoes for formal occasions that mom bought you in 8th grade";
         public override ClothingStyle Style => ClothingStyle.Formal;
     }
-    public class CasualHat : Hat
+    public class FormalHat : Hat
     {
-        public override string Name => "Knitted beanie";
-        public override string Description => "Quite worn out but very warm";
-        public override ClothingStyle Style => ClothingStyle.Casual;
+        public override string Name => "Mohawk";
+        public override string Description => "All elders are afraid and you're out of gel now";
+        public override ClothingStyle Style => ClothingStyle.Formal;
+    }
+    public class FormalEarrings : Earrings
+    {
+        public override string Name => "Pipe";
+        public override string Description => "Quite pretencious, but you look tough";
+        public override ClothingStyle Style => ClothingStyle.Formal;
+    }
+
+
+
+
+    //--------------------------------------------COOL STYLE------------------------------------------------
+    public class CoolShirt : Shirt
+    {
+        public override string Name => "Dad's punk shirt";
+        public override string Description => "Fainted skull print and sleeves absence makes you look sick";
+        public override ClothingStyle Style => ClothingStyle.Cool;
+    }
+    public class CoolPants : Pants
+    {
+        public override string Name => "DIY trousers";
+        public override string Description => "You feel bold and creative and cringe";
+        public override ClothingStyle Style => ClothingStyle.Cool;
+    }
+    public class CoolShoes : Shoes
+    {
+        public override string Name => "Pink pidkradulyas";
+        public override string Description => "You look like fantasy-book background character";
+        public override ClothingStyle Style => ClothingStyle.Cool;
     }
     public class CoolHat : Hat
     {
@@ -76,30 +100,11 @@ namespace DressUpGame.models
         public override string Description => "Girls like it. And you look like a girl too";
         public override ClothingStyle Style => ClothingStyle.Cool;
     }
-    public class FormalHat : Hat
-    {
-        public override string Name => "Cyllinder hat";
-        public override string Description => "You've robbed MadHatter from Alice in Wonderland";
-        public override ClothingStyle Style => ClothingStyle.Formal;
-    }
-    public class CasualEarrings : Earrings
-    {
-        public override string Name => "One ear pierced";
-        public override string Description => "You mom starts looking for your pirate ship";
-        public override ClothingStyle Style => ClothingStyle.Casual;
-    }
     public class CoolEarrings : Earrings
     {
-        public override string Name => "Both ears pierced";
-        public override string Description => "Girls like it too. And you still look like a girl too";
+        public override string Name => "Makeup, tattoes and piercings";
+        public override string Description => "Girls like it. And David Bowie too";
         public override ClothingStyle Style => ClothingStyle.Cool;
     }
-    public class FormalEarrings : Earrings
-    {
-        public override string Name => "Eyeglasess";
-        public override string Description => "You pretend to look smart. Unexpectedly successfully";
-        public override ClothingStyle Style => ClothingStyle.Formal;
-    }
-
 }
 

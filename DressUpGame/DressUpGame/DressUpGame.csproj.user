@@ -3,12 +3,12 @@
   <PropertyGroup />
   <ItemGroup />
   <ItemGroup>
-    <Compile Update="views\ClothingDescriptionWindow.xaml.cs">
+    <Compile Update="views\InfoWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="views\ClothingDescriptionWindow.xaml">
+    <Page Update="views\InfoWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="views\MainWindow.xaml">

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -10,15 +11,20 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace DressUpGame.controls
 {
+    /*
+    -Event + EventManager
+    -OutfitBuilder
+    -Player
+    -Facade
+     */
+
     public class ClothingEvent
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public ClothingStyle Style { get; set; }
-        //????
         public Weather Weather { get; set; }
         public Mood Mood { get; set; }
-        //!!!!
 
         public ClothingEvent(string name, string description, ClothingStyle style, Weather weather, Mood mood)
         {
@@ -30,192 +36,10 @@ namespace DressUpGame.controls
         }
     }
 
-    public class OutfitBuilder
-    {
-        private IClothing? shirt;
-        private IClothing? pants;
-        private IClothing? shoes;
-        private IClothing? hat;
-        private IClothing? earrings;
-
-        public OutfitBuilder SetShirt(IClothing shirt)
-        {
-            this.shirt = shirt;
-            return this;
-        }
-
-        public OutfitBuilder SetPants(IClothing pants)
-        {
-            this.pants = pants;
-            return this;
-        }
-
-        public OutfitBuilder SetShoes(IClothing shoes)
-        {
-            this.shoes = shoes;
-            return this;
-        }
-
-        public OutfitBuilder SetHat(IClothing hat)
-        {
-            this.hat = hat;
-            return this;
-        }
-
-        public OutfitBuilder SetEarrings(IClothing earrings)
-        {
-            this.earrings = earrings;
-            return this;
-        }
-
-        //????????
-
-        public void Clear()
-        {
-            shirt = null;
-            pants = null;
-            hat = null;
-            earrings = null;
-            earrings = shoes;
-        }
-
-        public OutfitBuilder BeingSilly()
-        {
-            if (pants != null)
-            {
-                PantiesDecoration panties = new PantiesDecoration();
-                pants = panties.Decorate(pants);
-            }
-            return this;
-        }
-        public OutfitBuilder BeingSerious()
-        {
-            if (shirt != null)
-            {
-                IroningDecoration ironing = new IroningDecoration();
-                shirt = ironing.Decorate(shirt);
-            }
-            return this;
-        }
-
-        public OutfitBuilder WithSunglasses()//(Mood mood)
-        {
-            if (hat != null)
-            {
-                //if (mood == Mood.Happy || mood == Mood.Confident)
-                //{
-                SunglassesDecoration sunglasses = new SunglassesDecoration();
-                //if (hat != null)
-                //{
-                //    throw new Exception("Cannot wear sunglasses with a hat!");
-                //}
-                //hat = sunglasses.Decorate(hat ?? new NoHat()); // Use NoHat class if hat is null
-
-                hat = sunglasses.Decorate(hat); // Use NoHat class if hat is null
-
-                //}
-            }
-            return this;
-        }
-
-        public OutfitBuilder WithScarf()//(Mood mood)
-        {
-            if (hat != null)
-            {
-                //if (mood == Mood.Sad)
-                //{
-                ScarfDecoration scarf = new ScarfDecoration();
-                //hat = scarf.Decorate(hat ?? new NoHat()); // Use NoHat class if hat is null
-                hat = scarf.Decorate(hat); // Use NoHat class if hat is null
-
-                //}
-            }
-            return this;
-        }
-
-        public List<IClothing> Build()
-        {
-            List<IClothing> outfit = new();
-
-            if (hat != null && earrings != null && shoes != null)
-            {
-                outfit.Add(hat);
-                outfit.Add(earrings);
-                outfit.Add(shoes);
-            }
-
-            if (shirt != null)
-            {
-                outfit.Add(shirt);
-            }
-
-            if (pants != null)
-            {
-                outfit.Add(pants);
-            }
-
-            return outfit;
-        }
-    }
-
-
-    public class Player
-    {
-        private static Player? instance;
-
-        private List<IClothing> currentOutfit = new();
-
-        private int score = 0;
-
-        private Player() { }
-
-        public static Player GetInstance()
-        {
-            instance ??= new Player();
-            return instance;
-        }
-
-        public List<IClothing> GetCurrentOutfit()
-        {
-            return currentOutfit;
-        }
-
-        public void SetCurrentOutfit(List<IClothing> outfit)
-        {
-            currentOutfit = outfit;
-        }
-
-        public string GetOutfitDescription()
-        {
-            string outfitDescription = "Current Outfit:\n";
-            foreach (IClothing item in currentOutfit)
-            {
-                outfitDescription += $"{item.Name}: {item.Description}\n";
-            }
-            return outfitDescription;
-        }
-
-        public void DressUpForEvent(ClothingEvent clothingEvent)
-        {
-            score = 0;
-            foreach (IClothing item in currentOutfit)
-            {
-                if (item.Style == clothingEvent.Style)
-                {
-                    score++;
-                }
-            }
-        }
-
-        public int GetScore()
-        {
-            return score;
-        }
-    }
-
     public class ClothingEventManager
     {
         private readonly List<ClothingEvent> events;
+        private static readonly Random rnd = new Random();
 
         public ClothingEventManager()
         {
@@ -232,13 +56,115 @@ namespace DressUpGame.controls
 
         public ClothingEvent GetRandomEvent()
         {
-            Random rnd = new();
             int index = rnd.Next(events.Count);
             return events[index];
         }
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public class OutfitBuilder
+    {
+        private IClothing? shirt;
+        private IClothing? pants;
+        private IClothing? shoes;
+        private IClothing? hat;
+        private IClothing? earrings;
+
+        public OutfitBuilder SetShirt(IClothing? shirt) => Assign(ref this.shirt, value: shirt);
+        public OutfitBuilder SetPants(IClothing? pants) => Assign(ref this.pants, value: pants);
+        public OutfitBuilder SetShoes(IClothing? shoes) => Assign(ref this.shoes, value: shoes);
+        public OutfitBuilder SetHat(IClothing? hat) => Assign(ref this.hat, value: hat);
+        public OutfitBuilder SetEarrings(IClothing? earrings) => Assign(ref this.earrings, value: earrings);
+
+        public void Clear()
+        {
+            shirt = pants = hat = earrings = shoes = null;
+        }
+
+        public OutfitBuilder BeingSilly() => pants != null ? Decorate(ref pants, new PantiesDecoration()) : this;
+        public OutfitBuilder BeingSerious() => shirt != null ? Decorate(ref shirt, new IroningDecoration()) : this;
+        public OutfitBuilder WithSunglasses() => hat != null ? Decorate(ref hat, new SunglassesDecoration()) : this;
+        public OutfitBuilder WithScarf() => hat != null ? Decorate(ref hat, new ScarfDecoration()) : this;
+
+        public List<IClothing> Build()
+        {
+            var outfit = new List<IClothing>();
+            AddIfNotNull(outfit, hat, earrings, shoes);
+            AddIfNotNull(outfit, shirt);
+            AddIfNotNull(outfit, pants);
+            return outfit;
+        }
+
+        private static void AddIfNotNull(List<IClothing> outfit, params IClothing?[] items)
+        {
+            foreach (var item in items)
+            {
+                if (item != null)
+                    outfit.Add(item);
+            }
+        }
+
+        private static OutfitBuilder Assign(ref IClothing? field, IClothing value)
+        {
+            field = value;
+            return new OutfitBuilder { shirt = field, pants = field, shoes = field, hat = field, earrings = field };
+        }
+
+        private static OutfitBuilder Decorate(ref IClothing? clothing, IDecoration decoration)
+        {
+            clothing = decoration.Decorate(clothing);
+            return new OutfitBuilder { shirt = clothing, pants = clothing, shoes = clothing, hat = clothing, earrings = clothing };
+        }
+    }
+
+    public class Player
+    {
+        private static Player? instance;
+        private List<IClothing> currentOutfit = new List<IClothing>();
+        private int score = 0;
+
+        private Player() { }
+
+        public static Player GetInstance()
+        {
+            if (instance == null)
+            {
+                lock (typeof(Player))
+                {
+                    instance ??= new Player();
+                }
+            }
+            return instance;
+        }
+
+        public List<IClothing> GetCurrentOutfit() => currentOutfit;
+
+        public void SetCurrentOutfit(List<IClothing> outfit) => currentOutfit = outfit;
+
+        public string GetCurrentOutfitDescription()
+        {
+            StringBuilder outfitDescription = new StringBuilder("Current Outfit:\n");
+            foreach (IClothing item in currentOutfit)
+            {
+                outfitDescription.Append($"{item.Name}: {item.Description}\n");
+            }
+            return outfitDescription.ToString();
+        }
+
+        public void CalculateScore(ClothingEvent clothingEvent)
+        {
+            score = 0;
+            foreach (IClothing item in currentOutfit)
+            {
+                if (item.Style == clothingEvent.Style)
+                {
+                    score++;
+                }
+            }
+        }
+
+        public int GetScore() => score;
+    }
+
     public class DressUpFacade
     {
         private readonly ClothingEventManager game;
@@ -258,18 +184,12 @@ namespace DressUpGame.controls
         {
             List<IClothing> outfit = builder.Build();
             player.SetCurrentOutfit(outfit);
-            player.DressUpForEvent(game.GetRandomEvent());
+            player.CalculateScore(currentEvent);
         }
 
-        public int GetScore()
-        {
-            return player.GetScore();
-        }
+        public int GetScore() => player.GetScore();
 
-        public string GetOutfitDescription(string title)
-        {
-            return $"{title}\n\n{player.GetOutfitDescription()}";
-        }
+        public string GetOutfitDescription() => $"\n\n{player.GetCurrentOutfitDescription()}";
 
         public void ClearOutfit()
         {
@@ -277,22 +197,11 @@ namespace DressUpGame.controls
             player.SetCurrentOutfit(new List<IClothing>());
         }
 
-        public ClothingEvent GetRandomEvent()
-        {
-            currentEvent = game.GetRandomEvent();
-            return currentEvent;
-        }
+        public ClothingEvent GetRandomEvent() => game.GetRandomEvent();
 
-        public string GetCurrentEventDescription()
-        {
-            ClothingEvent randomEvent = game.GetRandomEvent();
-            return $"{randomEvent.Name} - {randomEvent.Description}";
-        }
+        public string GetCurrentEventDescription() => $"{currentEvent.Name} - {currentEvent.Description}";
 
-        public ClothingStyle GetCurrentEventStyle()
-        {
-            return game.GetRandomEvent().Style;
-        }
+        public ClothingStyle GetCurrentEventStyle() => currentEvent.Style;
 
         public void SetShirt(ClothingStyle style)
         {
@@ -358,10 +267,9 @@ namespace DressUpGame.controls
             }
         }
 
-
         public void SetAccessories(ClothingStyle style)
         {
-            IAccessoryFactory factory;
+            IAccessoryFactory? factory;
             switch (style)
             {
                 case ClothingStyle.Casual:
@@ -372,6 +280,9 @@ namespace DressUpGame.controls
                     break;
                 case ClothingStyle.Cool:
                     factory = new CoolAccessoryFactory();
+                    break;
+                case ClothingStyle.None:
+                    factory = null;
                     break;
                 default:
                     factory = null;
@@ -391,9 +302,6 @@ namespace DressUpGame.controls
                 builder.SetEarrings(null);
             }
         }
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     }
 }
 

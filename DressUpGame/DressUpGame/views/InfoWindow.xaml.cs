@@ -4,9 +4,9 @@ using System.Windows.Controls;
 
 namespace DressUpGame
 {
-    public partial class ClothingDescriptionWindow : Window
+    public partial class InfoWindow : Window
     {
-        public ClothingDescriptionWindow(string outfitDescription)
+        public InfoWindow(string outfitDescription)
         {
             InitializeComponent();
             DescriptionTextBlock.Text = outfitDescription;
