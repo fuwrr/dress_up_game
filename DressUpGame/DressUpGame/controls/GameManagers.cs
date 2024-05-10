@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DressUpGame.models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
@@ -7,35 +8,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace DressUpGame.models
+namespace DressUpGame.controls
 {
     public class ClothingEvent
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public ClothingStyle Style { get; set; }
+        //????
+        public Weather Weather { get; set; }
+        public Mood Mood { get; set; }
+        //!!!!
 
-        public ClothingEvent(string name, string description, ClothingStyle style)
+        public ClothingEvent(string name, string description, ClothingStyle style, Weather weather, Mood mood)
         {
             Name = name;
             Description = description;
             Style = style;
+            Weather = weather;
+            Mood = mood;
         }
-    }
-
-    public enum ClothingStyle
-    {
-        Formal,
-        Casual,
-        Cool,
-        None
-    }
-
-    public interface IClothing
-    {
-        string Name { get; }
-        string Description { get; }
-        ClothingStyle Style { get; }
     }
 
     public class OutfitBuilder
@@ -73,6 +65,71 @@ namespace DressUpGame.models
         public OutfitBuilder SetEarrings(IClothing earrings)
         {
             this.earrings = earrings;
+            return this;
+        }
+
+        //????????
+
+        public void Clear()
+        {
+            shirt = null;
+            pants = null;
+            hat = null;
+            earrings = null;
+            earrings = shoes;
+        }
+
+        public OutfitBuilder BeingSilly()
+        {
+            if (pants != null)
+            {
+                PantiesDecoration panties = new PantiesDecoration();
+                pants = panties.Decorate(pants);
+            }
+            return this;
+        }
+        public OutfitBuilder BeingSerious()
+        {
+            if (shirt != null)
+            {
+                IroningDecoration ironing = new IroningDecoration();
+                shirt = ironing.Decorate(shirt);
+            }
+            return this;
+        }
+
+        public OutfitBuilder WithSunglasses()//(Mood mood)
+        {
+            if (hat != null)
+            {
+                //if (mood == Mood.Happy || mood == Mood.Confident)
+                //{
+                SunglassesDecoration sunglasses = new SunglassesDecoration();
+                //if (hat != null)
+                //{
+                //    throw new Exception("Cannot wear sunglasses with a hat!");
+                //}
+                //hat = sunglasses.Decorate(hat ?? new NoHat()); // Use NoHat class if hat is null
+
+                hat = sunglasses.Decorate(hat); // Use NoHat class if hat is null
+
+                //}
+            }
+            return this;
+        }
+
+        public OutfitBuilder WithScarf()//(Mood mood)
+        {
+            if (hat != null)
+            {
+                //if (mood == Mood.Sad)
+                //{
+                ScarfDecoration scarf = new ScarfDecoration();
+                //hat = scarf.Decorate(hat ?? new NoHat()); // Use NoHat class if hat is null
+                hat = scarf.Decorate(hat); // Use NoHat class if hat is null
+
+                //}
+            }
             return this;
         }
 
@@ -156,22 +213,20 @@ namespace DressUpGame.models
         }
     }
 
-    public class Game
+    public class ClothingEventManager
     {
         private readonly List<ClothingEvent> events;
 
-        public Game()
+        public ClothingEventManager()
         {
             events = new List<ClothingEvent>
             {
-                new ClothingEvent("Seeing Okscana Dmytrivna", "You want to look as smart as possible", ClothingStyle.Formal),
-                new ClothingEvent("Attending your wedding", "Actually you don't have time to be fancy", ClothingStyle.Casual),
-                new ClothingEvent("Going to give a lecture on behaviour to your niece", "You have to look older and colder.", ClothingStyle.Cool),
-                new ClothingEvent("Going to adoption centre for a cat", "You want to slightly impress your new buddy.", ClothingStyle.Formal),
-                new ClothingEvent("Going to take out a loan at the bank", "Better not be looking too rich or too cool.", ClothingStyle.Casual),
-                new ClothingEvent("Going to bless the Easter bread", "Don't look like a fool and dress only cool!", ClothingStyle.Cool),
-
-                //new ClothingEvent("Modeling and analyzing software lab!", "Serdyuk's looking, be cool!!.", ClothingStyle.Cool)
+                new ClothingEvent("Seeing Okscana Dmytrivna", "You want to look as smart as possible", ClothingStyle.Formal, Weather.Sunny, Mood.Silly),
+                new ClothingEvent("Attending your wedding", "Actually you don't have time to be fancy", ClothingStyle.Casual, Weather.Sunny, Mood.Silly),
+                new ClothingEvent("Going to give a lecture on behaviour to your niece", "You have to look older and colder.", ClothingStyle.Cool, Weather.Sunny, Mood.Silly),
+                new ClothingEvent("Going to adoption centre for a cat", "You want to slightly impress your new buddy.", ClothingStyle.Formal, Weather.Sunny, Mood.Silly),
+                new ClothingEvent("Going to take out a loan at the bank", "Better not be looking too rich or too cool.", ClothingStyle.Casual, Weather.Sunny, Mood.Silly),
+                new ClothingEvent("Going to bless the Easter bread", "Don't look like a fool and dress only cool!", ClothingStyle.Cool, Weather.Sunny, Mood.Silly),
             };
         }
 
@@ -183,86 +238,15 @@ namespace DressUpGame.models
         }
     }
 
-    public interface IAccessoryFactory
-    {
-        Shoes CreateShoes();
-        Hat CreateHat();
-        Earrings CreateEarrings();
-    }
-    public abstract class Shoes : IClothing
-    {
-        public abstract string Name { get; }
-        public abstract string Description { get; }
-        public abstract ClothingStyle Style { get; }
-    }
-    public abstract class Hat : IClothing
-    {
-        public abstract string Name { get; }
-        public abstract string Description { get; }
-        public abstract ClothingStyle Style { get; }
-    }
-    public abstract class Earrings : IClothing
-    {
-        public abstract string Name { get; }
-        public abstract string Description { get; }
-        public abstract ClothingStyle Style { get; }
-    }
-    public class CasualAccessoryFactory : IAccessoryFactory
-    {
-        public Shoes CreateShoes()
-        {
-            return new CasualShoes();
-        }
-        public Hat CreateHat()
-        {
-            return (Hat)new CasualHat();
-        }
-        public Earrings CreateEarrings()
-        {
-            return new CasualEarrings();
-        }
-    }
-
-    public class CoolAccessoryFactory : IAccessoryFactory
-    {
-        public Shoes CreateShoes()
-        {
-            return new CoolShoes();
-        }
-        public Hat CreateHat()
-        {
-            return (Hat)new CoolHat();
-        }
-        public Earrings CreateEarrings()
-        {
-            return new CoolEarrings();
-        }
-    }
-
-    public class FormalAccessoryFactory : IAccessoryFactory
-    {
-        public Shoes CreateShoes()
-        {
-            return new FormalShoes();
-        }
-        public Hat CreateHat()
-        {
-            return new FormalHat();
-        }
-        public Earrings CreateEarrings()
-        {
-            return new FormalEarrings();
-        }
-    }
-
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public class DressUpFacade
     {
-        private readonly Game game;
+        private readonly ClothingEventManager game;
         private readonly Player player;
         private OutfitBuilder builder;
         private ClothingEvent currentEvent;
 
-        public DressUpFacade(Game game, Player player)
+        public DressUpFacade(ClothingEventManager game, Player player)
         {
             this.game = game;
             this.player = player;
@@ -285,6 +269,12 @@ namespace DressUpGame.models
         public string GetOutfitDescription(string title)
         {
             return $"{title}\n\n{player.GetOutfitDescription()}";
+        }
+
+        public void ClearOutfit()
+        {
+            builder.Clear();
+            player.SetCurrentOutfit(new List<IClothing>());
         }
 
         public ClothingEvent GetRandomEvent()
@@ -342,6 +332,33 @@ namespace DressUpGame.models
             }
         }
 
+        public void SetMoodDecorations(string mood)
+        {
+            switch (mood)
+            {
+                case "Silly":
+                    builder.BeingSilly(); break;
+                case "Serious":
+                    builder.BeingSerious(); break;
+                default:
+                    break;
+            }
+        }
+
+        public void SetWeatherDecorations(string weather)
+        {
+            switch (weather)
+            {
+                case "Sunny":
+                    builder.WithSunglasses(); break;
+                case "Cold":
+                    builder.WithScarf(); break;
+                default:
+                    break;
+            }
+        }
+
+
         public void SetAccessories(ClothingStyle style)
         {
             IAccessoryFactory factory;
@@ -374,7 +391,9 @@ namespace DressUpGame.models
                 builder.SetEarrings(null);
             }
         }
-    }
 
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    }
 }
 

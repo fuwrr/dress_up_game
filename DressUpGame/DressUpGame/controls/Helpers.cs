@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace DressUpGame.models
+namespace DressUpGame.controls
 {
     public static class CroppingHelper
     {
