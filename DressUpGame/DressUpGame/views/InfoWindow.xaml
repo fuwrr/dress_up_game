@@ -1,7 +1,7 @@
 ﻿<Window x:Class="DressUpGame.InfoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Clothing Description" Height="300" Width="750">
+        Title="It's interesting to know..." Height="300" Width="750">
     <Grid>
         <TextBlock x:Name="DescriptionTextBlock" Text="{Binding Description}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Margin="20px"/>
 
