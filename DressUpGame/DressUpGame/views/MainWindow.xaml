@@ -3,7 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:DressUpGame.controls"
         Title="Cool Dress Up Game" Height="500" Width="610">
-
+    <Window.Resources>
+        <Style x:Key="RedButtonWithYellowText" TargetType="Button">
+            <Setter Property="Background" Value="Red"/>
+            <Setter Property="Foreground" Value="Yellow"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -51,7 +58,7 @@
             <Image Name="shoesImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Canvas>
 
-        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
+        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -60,21 +67,30 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Row="0" Grid.Column ="0" Content="My look" Width="110" Height="20" Margin="0px 0px 0px 0px" Click="DressUpButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="0" Grid.Column ="1" Content="I'm ready!" Width="110" Height="20" Margin="0px 0px 0px 0px" Click="ImReadyButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="0" Grid.Column ="2" Content="Give a hint!" Width="110" Height="20" Margin="0px 0px 0px 0px" Click="HintButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+
+            <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Content="Start Over" Width="110" Height="20" Margin="0px 0px 0px 20px" Click="ClearOutfitButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Row="0" Grid.Column ="0" Content="My look" Width="90" Height="20" Margin="0px 0px 0px 0px" Click="DressUpButton_Click" Cursor="Hand"/>
-            <Button Grid.Row="0" Grid.Column ="1" Content="I'm ready!" Width="90" Height="20" Margin="0px 0px 0px 0px" Click="ImReadyButton_Click" Cursor="Hand"/>
-            <Button Grid.Row="0" Grid.Column ="2" Content="Give a hint!" Width="100" Height="20" Margin="0px 0px 0px 0px" Click="HintButton_Click" Cursor="Hand"/>
+            <Button Grid.Row="0" Grid.Column="0" Content="Silly" Width="70" Height="20" Margin="25px 0px 0px 0px" Click="MoodButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="0" Grid.Column="1" Content="Serious" Width="70" Height="20" Margin="0px" Click="MoodButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
 
-            <Button Grid.Row="0" Grid.Column="3" Content="Silly" Width="60" Height="20" Margin="25px 0px 0px 0px" Click="MoodButton_Click" Cursor="Hand"/>
-            <Button Grid.Row="0" Grid.Column="4" Content="Serious" Width="60" Height="20" Margin="0px" Click="MoodButton_Click" Cursor="Hand"/>
-
-            <Button Grid.Row="1" Grid.Column="3" Content="Sunny" Width="60" Height="20" Margin="25px 0px 0px 20px" Click="WeatherButton_Click" Cursor="Hand"/>
-            <Button Grid.Row="1" Grid.Column="4" Content="Cold" Width="60" Height="20" Margin="0px 0px 0px 20px" Click="WeatherButton_Click" Cursor="Hand"/>
-
-            <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Content="Start Over" Width="100" Height="20" Margin="0px 0px 0px 20px" Click="ClearOutfitButton_Click" Cursor="Hand"/>
+            <Button Grid.Row="1" Grid.Column="0" Content="Sunny" Width="70" Height="20" Margin="25px 0px 0px 20px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="Cold" Width="70" Height="20" Margin="0px 0px 0px 20px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
         </Grid>
 
     </Grid>

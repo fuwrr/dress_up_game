@@ -15,11 +15,15 @@ namespace DressUpGame
     public partial class MainWindow : Window
     {
         private readonly DressUpFacade facade;
+        List<string> selectedMoods;
+        List<string> selectedWeather;
 
         public MainWindow()
         {
             InitializeComponent();
             facade = new DressUpFacade(new ClothingEventManager(), Player.GetInstance());
+            selectedMoods = new List<string>();
+            selectedWeather = new List<string>();
             RefreshUI(null, null);
         }
 
@@ -28,6 +32,8 @@ namespace DressUpGame
             facade.GetRandomEvent();
             eventInfoTextBlock.Text = facade.GetCurrentEventDescription();
             ClearOutfitButton_Click(sender, e);
+            selectedMoods = new List<string>();
+            selectedWeather = new List<string>();
         }
 
         private void DressUpButton_Click(object sender, RoutedEventArgs e)
@@ -46,9 +52,10 @@ namespace DressUpGame
             RefreshUI(null, null);
         }
 
+        //Add showing mood and weather
         private void HintButton_Click(object sender, RoutedEventArgs e)
         {
-            InfoWindow hintWindow = new($"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\nAlso important notes:\n\nwhen you choose hat - it also automatically chooses earrings and shoes that are can be +1 point!\nand when you're choosing mood or wether, it's better to be fully dressed, or it will not have any impact!");
+            InfoWindow hintWindow = new($"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\nAlso important notes:\n\nwhen you choose hat - it also automatically chooses earrings and shoes that are can be +1 point!\nand when you're choosing mood or weather, it will be counted in score no matter are you dressed or not, but description will be changed only if necessary clothes are worn");
             hintWindow.ShowDialog();
         }
 
@@ -102,10 +109,14 @@ namespace DressUpGame
 
             if (clickedButton != null)
             {
-                string buttonContent = clickedButton.Content.ToString();
+                string mood = clickedButton.Content.ToString();
 
-                facade.SetMoodDecorations(buttonContent);
-                moodTextBox.Text = buttonContent;
+                facade.SetMoodDecorations(mood);
+                if (!selectedMoods.Contains(mood))
+                {
+                    selectedMoods.Add(mood);
+                }
+                moodTextBox.Text = string.Join(" + ", selectedMoods);
             }
         }
 
@@ -115,10 +126,15 @@ namespace DressUpGame
 
             if (clickedButton != null)
             {
-                string buttonContent = clickedButton.Content.ToString();
+                string weather = clickedButton.Content.ToString();
 
-                facade.SetWeatherDecorations(buttonContent);
-                weatherTextBox.Text = buttonContent;
+                facade.SetWeatherDecorations(weather);
+
+                if (!selectedWeather.Contains(weather))
+                {
+                    selectedWeather.Add(weather);
+                }
+                weatherTextBox.Text = string.Join(" + ", selectedWeather);
             }
         }
 

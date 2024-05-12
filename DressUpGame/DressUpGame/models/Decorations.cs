@@ -6,7 +6,7 @@
         IClothing Decorate(IClothing clothing);
     }
 
-    //Class for decorating ther classes
+    //Class for decorating other classes
     public class DecoratedClothing : IClothing
     {
         private readonly IClothing _clothing;
@@ -30,7 +30,7 @@
     }
 
 
-    //----------------------- Weather-Based Accessories -----------------------------
+    //----------------------- WeatherFlags-Based Accessories -----------------------------
     public class SunglassesDecoration : IDecoration //weather == sunny
     {
         public IClothing Decorate(IClothing clothing)
@@ -47,7 +47,7 @@
         }
     }
 
-    //--------------------------- Mood-Based Accessories -----------------------------
+    //--------------------------- MoodFlags-Based Accessories -----------------------------
     public class PantiesDecoration : IDecoration //mood == silly
     {
         public IClothing Decorate(IClothing clothing)

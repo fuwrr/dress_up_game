@@ -61,8 +61,8 @@ namespace DressUpGame.models
     }
     public class FormalHat : Hat
     {
-        public override string Name => "Mohawk";
-        public override string Description => "All elders are afraid and you're out of gel now";
+        public override string Name => "Cyllinder hat";
+        public override string Description => "Old-fashioned but exquisite";
         public override ClothingStyle Style => ClothingStyle.Formal;
     }
     public class FormalEarrings : Earrings
@@ -96,8 +96,8 @@ namespace DressUpGame.models
     }
     public class CoolHat : Hat
     {
-        public override string Name => "Long hair";
-        public override string Description => "Girls like it. And you look like a girl too";
+        public override string Name => "Mohawk";
+        public override string Description => "All elders are afraid and you're out of gel now";
         public override ClothingStyle Style => ClothingStyle.Cool;
     }
     public class CoolEarrings : Earrings

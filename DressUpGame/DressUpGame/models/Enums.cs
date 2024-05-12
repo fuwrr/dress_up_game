@@ -1,15 +1,17 @@
 ﻿namespace DressUpGame.models
 {
-    public enum Weather
+    [System.Flags]
+    public enum WeatherFlags
     {
-        Sunny,
-        Cold
+        Sunny = 1 << 0,
+        Cold = 1 << 1
     }
 
-    public enum Mood
+    [System.Flags]
+    public enum MoodFlags
     {
-        Silly,
-        Serious
+        Silly = 1 << 0,
+        Serious = 1 << 1
     }
 
     public enum ClothingStyle

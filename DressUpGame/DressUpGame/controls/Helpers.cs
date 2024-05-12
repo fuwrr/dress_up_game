@@ -70,4 +70,21 @@ namespace DressUpGame.controls
         }
     }
 
+    //There's no .Count func in enums and flags
+    public static class FlagHelper
+    {
+        public static int GetNumberOfOptions<T>() where T : Enum
+        {
+            int count = 0;
+            foreach (var value in Enum.GetValues(typeof(T)))
+            {
+                if (((int)(object)value) != 0 && (((int)(object)value) & (((int)(object)value) - 1)) == 0)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+
 }
