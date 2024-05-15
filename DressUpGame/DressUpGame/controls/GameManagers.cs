@@ -16,6 +16,7 @@ namespace DressUpGame.controls
     -OutfitBuilder
     -Player
     -Facade
+    -StrikeObserver
      */
 
     public class ClothingEvent
@@ -179,6 +180,9 @@ namespace DressUpGame.controls
         
         //BUT fix suggestion: player can score higher points if event has more flags
         //need to normalize score data
+
+        //okay, I compare mismatched ? matched and ++ or -- separately for mood and weather
+        //treat as additional points, nothing happens if not chosen
         public void CalculateScore(ClothingEvent clothingEvent)
         {
             score = 0;
@@ -208,8 +212,12 @@ namespace DressUpGame.controls
                 }
                 // No action needed for cases where the flag is not set in the user's choice
             }
-            score += matchingMoodFlags;
-            score -= mismatchedMoodFlags;
+            if (mismatchedMoodFlags != 0 && matchingMoodFlags != 0)
+            {
+                score = matchingMoodFlags > mismatchedMoodFlags ? score++ : score--;
+            }
+            //score += matchingMoodFlags;
+            //score -= mismatchedMoodFlags;
 
             int matchingWeatherFlags = 0;
             int mismatchedWeatherFlags = 0;
@@ -244,7 +252,12 @@ namespace DressUpGame.controls
         private MoodFlags mood;
         private WeatherFlags weather;
 
-        public DressUpFacade(ClothingEventManager game, Player player)
+        private int maxScoreStreak = 0;
+        private int currentScoreStreak = 0;
+        private IStreakObserver streakObserver; // Observer interface for streak tracking
+        private FileHelper fileHelper = new FileHelper();
+
+        public DressUpFacade(ClothingEventManager game, Player player, IStreakObserver observer)
         {
             this.game = game;
             this.player = player;
@@ -252,6 +265,11 @@ namespace DressUpGame.controls
             currentEvent = game.GetRandomEvent();
             mood = 0;
             weather = 0;
+            streakObserver = observer;
+
+            int[] maxScoreStreak = new int[1]; // Array to store the streak value
+            fileHelper.LoadMaxScoreStreak(maxScoreStreak);
+            this.maxScoreStreak = maxScoreStreak[0]; // Assign to class variable
         }
 
         public void DressUp()
@@ -262,6 +280,24 @@ namespace DressUpGame.controls
             player.SetCurrentOutfit(outfit);
             player.CalculateScore(currentEvent);
             Debug.WriteLine($"mood: {mood}, weather: {weather}");
+            if (player.GetScore() == 5)
+            {
+                currentScoreStreak++;
+                streakObserver.OnStreakUpdate(currentScoreStreak); // Notify observer about streak
+
+                if (currentScoreStreak > maxScoreStreak)
+                {
+                    maxScoreStreak = currentScoreStreak;
+                    streakObserver.OnNewHighStreak(maxScoreStreak); // Notify about new high score streak
+                                                                    // Write new high streak to file (implementation details not shown)
+                    fileHelper.SaveMaxScoreStreak(maxScoreStreak);  // ... write to file ...
+                }
+            }
+            else
+            {
+                currentScoreStreak = 0;
+                streakObserver.OnStreakBroken(); // Notify about broken streak
+            }
         }
 
         public int GetScore() => player.GetScore();
@@ -391,5 +427,32 @@ namespace DressUpGame.controls
             }
         }
     }
+
+    public interface IStreakObserver
+    {
+        void OnStreakUpdate(int currentStreak);
+        void OnNewHighStreak(int newHighStreak);
+        void OnStreakBroken();
+    }
+
+    // Example implementation of IStreakObserver (can be in a separate class)
+    public class StreakDisplayObserver : IStreakObserver
+    {
+        public void OnStreakUpdate(int currentStreak)
+        {
+            Debug.WriteLine($"Current Score Streak: {currentStreak}"); // Update UI display
+        }
+
+        public void OnNewHighStreak(int newHighStreak)
+        {
+            Debug.WriteLine($"New High Score Streak: {newHighStreak}! You're the best!"); // Display congratulatory message
+        }
+
+        public void OnStreakBroken()
+        {
+            Debug.WriteLine($"Score Streak Broken. Try again!"); // Display streak broken message
+        }
+    }
+
 }
 

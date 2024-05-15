@@ -17,11 +17,12 @@ namespace DressUpGame
         private readonly DressUpFacade facade;
         List<string> selectedMoods;
         List<string> selectedWeather;
+        IStreakObserver streakObserver = new StreakDisplayObserver();
 
         public MainWindow()
         {
             InitializeComponent();
-            facade = new DressUpFacade(new ClothingEventManager(), Player.GetInstance());
+            facade = new DressUpFacade(new ClothingEventManager(), Player.GetInstance(), streakObserver);
             selectedMoods = new List<string>();
             selectedWeather = new List<string>();
             RefreshUI(null, null);
