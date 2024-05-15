@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -87,4 +88,42 @@ namespace DressUpGame.controls
         }
     }
 
+    //helps to save+load new high strike 
+    public class FileHelper
+    {
+        private const string streakFilePath = "streak.txt";
+
+        public void LoadMaxScoreStreak(int[] maxScoreStreak)
+        {
+            if (File.Exists(streakFilePath))
+            {
+                try
+                {
+                    using (StreamReader reader = new StreamReader(streakFilePath))
+                    {
+                        maxScoreStreak[0] = int.Parse(reader.ReadLine());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading max score streak: {ex.Message}");
+                }
+            }
+        }
+
+        public void SaveMaxScoreStreak(int maxScoreStreak)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(streakFilePath, false)) // Overwrite existing file
+                {
+                    writer.WriteLine(maxScoreStreak);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving max score streak: {ex.Message}");
+            }
+        }
+    }
 }
