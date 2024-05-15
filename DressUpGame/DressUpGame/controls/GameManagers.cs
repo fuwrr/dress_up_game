@@ -50,20 +50,20 @@ namespace DressUpGame.controls
         {
             events = new List<ClothingEvent>
             {
-                new ClothingEvent("Seeing Okscana Dmytrivna", "You want to look as smart as possible, but balance on dorky side too", ClothingStyle.Formal, 0, MoodFlags.Silly|MoodFlags.Serious),
+                /*new ClothingEvent("Seeing Okscana Dmytrivna", "You want to look as smart as possible, but balance on dorky side too", ClothingStyle.Formal, 0, MoodFlags.Silly|MoodFlags.Serious),
                 new ClothingEvent("Attending your wedding", "Actually you don't have time to be fancy or feel overwhelmed", ClothingStyle.Casual, 0, MoodFlags.Silly),
                 new ClothingEvent("Going to give a lecture on behaviour to your niece", "You have to look older and colder, despite the weather.", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Serious),
                 new ClothingEvent("Going to adoption centre for a cat", "You want to slightly impress your new buddy on this winter sunny day.", ClothingStyle.Formal, WeatherFlags.Sunny|WeatherFlags.Cold, 0),
                 new ClothingEvent("Going to take out a loan at the bank", "Better not be looking too rich or too cool.", ClothingStyle.Casual, 0, MoodFlags.Serious),
-                new ClothingEvent("Going to bless the Easter bread", "Don't look like a fool and dress only cool! But не забудь шапку!", ClothingStyle.Cool, WeatherFlags.Cold, MoodFlags.Serious),
+                new ClothingEvent("Going to bless the Easter bread", "Don't look like a fool and dress only cool! But не забудь шапку!", ClothingStyle.Cool, WeatherFlags.Cold, MoodFlags.Serious),*/
 
 
                 //for testing purposes, delete later
-                /*new ClothingEvent("Silly", " ", ClothingStyle.Formal, 0, MoodFlags.Silly),
+                new ClothingEvent("Silly", " ", ClothingStyle.Formal, 0, MoodFlags.Silly),
                 new ClothingEvent("Silly And Serious", " ", ClothingStyle.Casual, 0, MoodFlags.Silly|MoodFlags.Serious),
                 new ClothingEvent("Silly And Sunny", " ", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Silly),
                 new ClothingEvent("Silly And Serious And Sunny", " ", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Silly|MoodFlags.Serious),
-                new ClothingEvent("Silly And Serious And Sunny And Cold", " ", ClothingStyle.Cool, WeatherFlags.Sunny|WeatherFlags.Cold, MoodFlags.Silly|MoodFlags.Serious)*/
+                new ClothingEvent("Silly And Serious And Sunny And Cold", " ", ClothingStyle.Cool, WeatherFlags.Sunny|WeatherFlags.Cold, MoodFlags.Silly|MoodFlags.Serious)
             };
         }
 
@@ -78,6 +78,30 @@ namespace DressUpGame.controls
             currentIndex = (currentIndex + 1) % events.Count; // Increment index cyclically
             return events[currentIndex];
         }*/
+
+        static public int GetMaxScoreForEvent(ClothingEvent eventData)
+        {
+            int maxScore = 5; //5 = shirt + pants + (hat + earrings + shoes)
+
+            // Count matching and mismatched flags for Mood
+            foreach (MoodFlags moodFlag in Enum.GetValues(typeof(MoodFlags)))
+            {
+                if ((moodFlag != 0) && ((eventData.Mood & moodFlag) != 0))
+                {
+                    maxScore++; // User correctly chose a mood present in the event
+                }
+            }
+
+            foreach (WeatherFlags weatherFlag in Enum.GetValues(typeof(WeatherFlags)))
+            {
+                if ((weatherFlag != 0) && ((eventData.Weather & weatherFlag) != 0))
+                {
+                    maxScore++; // User correctly chose a mood present in the event
+                }
+            }
+            Debug.WriteLine($"Max score possible: {maxScore}");
+            return maxScore;
+        }
     }
 
     public class OutfitBuilder
@@ -178,10 +202,10 @@ namespace DressUpGame.controls
         //you can cheat by choosing all options
         //so im also decreasing if answer is wrong
         
-        //BUT fix suggestion: player can score higher points if event has more flags
-        //need to normalize score data
+        //player can score higher points if event has more flags
+        //but it is noted when counting streaks
 
-        //okay, I compare mismatched ? matched and ++ or -- separately for mood and weather
+        //NOT USED IDEA: compare mismatched ? matched and ++ or -- separately for mood and weather
         //treat as additional points, nothing happens if not chosen
         public void CalculateScore(ClothingEvent clothingEvent)
         {
@@ -212,12 +236,8 @@ namespace DressUpGame.controls
                 }
                 // No action needed for cases where the flag is not set in the user's choice
             }
-            if (mismatchedMoodFlags != 0 && matchingMoodFlags != 0)
-            {
-                score = matchingMoodFlags > mismatchedMoodFlags ? score++ : score--;
-            }
-            //score += matchingMoodFlags;
-            //score -= mismatchedMoodFlags;
+            score += matchingMoodFlags;
+            score -= mismatchedMoodFlags;
 
             int matchingWeatherFlags = 0;
             int mismatchedWeatherFlags = 0;
@@ -255,7 +275,7 @@ namespace DressUpGame.controls
         private int maxScoreStreak = 0;
         private int currentScoreStreak = 0;
         private IStreakObserver streakObserver; // Observer interface for streak tracking
-        private FileHelper fileHelper = new FileHelper();
+        private FileHelper fileHelper = new();
 
         public DressUpFacade(ClothingEventManager game, Player player, IStreakObserver observer)
         {
@@ -269,7 +289,7 @@ namespace DressUpGame.controls
 
             int[] maxScoreStreak = new int[1]; // Array to store the streak value
             fileHelper.LoadMaxScoreStreak(maxScoreStreak);
-            this.maxScoreStreak = maxScoreStreak[0]; // Assign to class variable
+            this.maxScoreStreak = maxScoreStreak[0];
         }
 
         public void DressUp()
@@ -280,7 +300,7 @@ namespace DressUpGame.controls
             player.SetCurrentOutfit(outfit);
             player.CalculateScore(currentEvent);
             Debug.WriteLine($"mood: {mood}, weather: {weather}");
-            if (player.GetScore() == 5)
+            if (player.GetScore() == ClothingEventManager.GetMaxScoreForEvent(currentEvent))
             {
                 currentScoreStreak++;
                 streakObserver.OnStreakUpdate(currentScoreStreak); // Notify observer about streak
@@ -289,8 +309,7 @@ namespace DressUpGame.controls
                 {
                     maxScoreStreak = currentScoreStreak;
                     streakObserver.OnNewHighStreak(maxScoreStreak); // Notify about new high score streak
-                                                                    // Write new high streak to file (implementation details not shown)
-                    fileHelper.SaveMaxScoreStreak(maxScoreStreak);  // ... write to file ...
+                    fileHelper.SaveMaxScoreStreak(maxScoreStreak);
                 }
             }
             else
@@ -435,22 +454,29 @@ namespace DressUpGame.controls
         void OnStreakBroken();
     }
 
-    // Example implementation of IStreakObserver (can be in a separate class)
+    // Example implementation of IStreakObserver
     public class StreakDisplayObserver : IStreakObserver
     {
         public void OnStreakUpdate(int currentStreak)
         {
-            Debug.WriteLine($"Current Score Streak: {currentStreak}"); // Update UI display
+            Debug.WriteLine($"Current Score Streak: {currentStreak}");
+            
+            InfoWindow streakWindow = new($"Wow, it's your {currentStreak} streak!");
+            streakWindow.ShowDialog();
         }
 
         public void OnNewHighStreak(int newHighStreak)
         {
-            Debug.WriteLine($"New High Score Streak: {newHighStreak}! You're the best!"); // Display congratulatory message
+            Debug.WriteLine($"New High Score Streak: {newHighStreak}! You're the best!");
+            InfoWindow streakWindow = new($"OMG YOU'VE GOT THE BIGGEST STIKE EVER ON THIS DEVICE. IT'S {newHighStreak}!!!!");
+            streakWindow.ShowDialog();
         }
 
         public void OnStreakBroken()
         {
-            Debug.WriteLine($"Score Streak Broken. Try again!"); // Display streak broken message
+            Debug.WriteLine($"Score Streak Broken. Try again!");
+            InfoWindow streakWindow = new($"Ohno, you broke your streak, u loser!");
+            streakWindow.ShowDialog();
         }
     }
 

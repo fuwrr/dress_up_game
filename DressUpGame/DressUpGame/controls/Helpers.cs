@@ -106,7 +106,7 @@ namespace DressUpGame.controls
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading max score streak: {ex.Message}");
+                    Debug.WriteLine($"Error loading max score streak: {ex.Message}");
                 }
             }
         }
@@ -122,7 +122,7 @@ namespace DressUpGame.controls
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving max score streak: {ex.Message}");
+                Debug.WriteLine($"Error saving max score streak: {ex.Message}");
             }
         }
     }
