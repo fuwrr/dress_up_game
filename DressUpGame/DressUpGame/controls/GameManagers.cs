@@ -17,6 +17,7 @@ namespace DressUpGame.controls
     -Player
     -Facade
     -StrikeObserver
+    -DressingState
      */
 
     public class ClothingEvent
@@ -59,11 +60,12 @@ namespace DressUpGame.controls
 
 
                 //for testing purposes, delete later
-                new ClothingEvent("Silly", " ", ClothingStyle.Formal, 0, MoodFlags.Silly),
+                /*new ClothingEvent("Silly", " ", ClothingStyle.Formal, 0, MoodFlags.Silly),
                 new ClothingEvent("Silly And Serious", " ", ClothingStyle.Casual, 0, MoodFlags.Silly|MoodFlags.Serious),
                 new ClothingEvent("Silly And Sunny", " ", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Silly),
                 new ClothingEvent("Silly And Serious And Sunny", " ", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Silly|MoodFlags.Serious),
-                new ClothingEvent("Silly And Serious And Sunny And Cold", " ", ClothingStyle.Cool, WeatherFlags.Sunny|WeatherFlags.Cold, MoodFlags.Silly|MoodFlags.Serious)
+                new ClothingEvent("Silly And Serious And Sunny And Cold", " ", ClothingStyle.Cool, WeatherFlags.Sunny|WeatherFlags.Cold, MoodFlags.Silly|MoodFlags.Serious)*/
+                new ClothingEvent("Casual event", "No weather or mood", ClothingStyle.Casual, 0, 0),
             };
         }
 
@@ -277,6 +279,12 @@ namespace DressUpGame.controls
         private IStreakObserver streakObserver; // Observer interface for streak tracking
         private FileHelper fileHelper = new();
 
+        public Stopwatch dressingTimer; 
+        public IDressingState state;
+
+        public string GetMood() => currentEvent?.Mood.ToString() ?? "No mood specified";
+        public string GetWeather() => currentEvent?.Weather.ToString() ?? "No weather specified";
+
         public DressUpFacade(ClothingEventManager game, Player player, IStreakObserver observer)
         {
             this.game = game;
@@ -289,7 +297,12 @@ namespace DressUpGame.controls
 
             int[] maxScoreStreak = new int[1]; // Array to store the streak value
             fileHelper.LoadMaxScoreStreak(maxScoreStreak);
-            this.maxScoreStreak = maxScoreStreak[0];
+            this.maxScoreStreak = maxScoreStreak[0]; // Assign to class variable
+
+            dressingTimer = new Stopwatch();
+            dressingTimer.Start();
+            state = new RelaxedState();
+
         }
 
         public void DressUp()
@@ -300,6 +313,9 @@ namespace DressUpGame.controls
             player.SetCurrentOutfit(outfit);
             player.CalculateScore(currentEvent);
             Debug.WriteLine($"mood: {mood}, weather: {weather}");
+
+            dressingTimer.Stop();
+
             if (player.GetScore() == ClothingEventManager.GetMaxScoreForEvent(currentEvent))
             {
                 currentScoreStreak++;
@@ -319,6 +335,37 @@ namespace DressUpGame.controls
             }
         }
 
+        private static readonly Random random = new Random();
+        public void IntroduceDifficulty()
+        {
+            Debug.WriteLine($"mood: {currentEvent.Mood}, weather: {currentEvent.Weather}");
+            // No mood or weather set in the event, add a random one
+            if (random.Next(2) == 0) // 50% chance
+            {
+                currentEvent.Mood |= (MoodFlags)Enum.GetValues(typeof(MoodFlags)).GetValue(random.Next(Enum.GetValues(typeof(MoodFlags)).Length));
+            }
+            else
+            {
+                currentEvent.Weather |= (WeatherFlags)Enum.GetValues(typeof(WeatherFlags)).GetValue(random.Next(Enum.GetValues(typeof(WeatherFlags)).Length));
+            }
+            
+            if (random.Next(10) == 0) // 10% chance
+            {
+                // Randomly remove existing mood or weather (if any)
+                if (currentEvent.Mood != 0)
+                {
+                    currentEvent.Mood = 0;
+                    Debug.WriteLine("Sudden Inspiration! Mood removed.");
+                }
+                else if (currentEvent.Weather != 0)
+                {
+                    currentEvent.Weather = 0;
+                    Debug.WriteLine("Sudden Inspiration! Weather removed.");
+                }
+            }
+            Debug.WriteLine($"mood: {currentEvent.Mood}, weather: {currentEvent.Weather}");
+        }
+
         public int GetScore() => player.GetScore();
 
         public string GetOutfitDescription() => $"\n\n{player.GetCurrentOutfitDescription()}";
@@ -333,7 +380,9 @@ namespace DressUpGame.controls
 
         public ClothingEvent GetRandomEvent() 
         { 
-            currentEvent = game.GetRandomEvent(); 
+            currentEvent = game.GetRandomEvent();
+            //dressingTimer.Start();
+            //dressingTimer.Reset();
             return currentEvent;
         }
 
@@ -343,6 +392,7 @@ namespace DressUpGame.controls
 
         public void SetShirt(ClothingStyle style)
         {
+            state.UpdateState(this);
             switch (style)
             {
                 case ClothingStyle.Casual:
@@ -362,6 +412,7 @@ namespace DressUpGame.controls
 
         public void SetPants(ClothingStyle style)
         {
+            state.UpdateState(this);
             switch (style)
             {
                 case ClothingStyle.Casual:
@@ -386,6 +437,7 @@ namespace DressUpGame.controls
         //----------------i've mentioned it in hint button text------------------
         public void SetMoodDecorations(string moodName)
         {
+            state.UpdateState(this);
             switch (moodName)
             {
                 case "Silly":
@@ -399,6 +451,7 @@ namespace DressUpGame.controls
 
         public void SetWeatherDecorations(string weatherName)
         {
+            state.UpdateState(this);
             switch (weatherName)
             {
                 case "Sunny":
@@ -412,6 +465,7 @@ namespace DressUpGame.controls
 
         public void SetAccessories(ClothingStyle style)
         {
+            state.UpdateState(this);
             IAccessoryFactory? factory;
             switch (style)
             {
@@ -454,7 +508,6 @@ namespace DressUpGame.controls
         void OnStreakBroken();
     }
 
-    // Example implementation of IStreakObserver
     public class StreakDisplayObserver : IStreakObserver
     {
         public void OnStreakUpdate(int currentStreak)
@@ -477,6 +530,50 @@ namespace DressUpGame.controls
             Debug.WriteLine($"Score Streak Broken. Try again!");
             InfoWindow streakWindow = new($"Ohno, you broke your streak, u loser!");
             streakWindow.ShowDialog();
+        }
+    }
+
+    public interface IDressingState
+    {
+        void UpdateState(DressUpFacade facade);
+    }
+
+
+    public class RelaxedState : IDressingState
+    {
+        public void UpdateState(DressUpFacade facade)
+        {
+            if (facade.dressingTimer.Elapsed.TotalSeconds > 5)
+            {
+                facade.state = new TenseState();
+                Debug.WriteLine("Entering Tense State");
+                InfoWindow tenseInfo = new("Entering Tense State!! CLOSE WINDOW, THE CLOCK'S TICKING");
+                tenseInfo.ShowDialog();
+                facade.IntroduceDifficulty();
+            }
+        }
+    }
+
+    public class TenseState : IDressingState
+    {
+        public void UpdateState(DressUpFacade facade)
+        {
+            if (facade.dressingTimer.Elapsed.TotalSeconds > 10)
+            {
+                facade.state = new RiskyState();
+                Debug.WriteLine("Entering Risky State");
+                InfoWindow tenseInfo = new("Entering RISKY State!! CLOSE WINDOW, THE CLOCK'S TICKING");
+                tenseInfo.ShowDialog();
+                facade.IntroduceDifficulty();
+            }
+        }
+    }
+
+    public class RiskyState : IDressingState
+    {
+        public void UpdateState(DressUpFacade facade)
+        {
+            // Implement additional logic for risky state
         }
     }
 

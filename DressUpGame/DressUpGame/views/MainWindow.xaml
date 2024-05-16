@@ -49,7 +49,7 @@
         <Image Grid.Row="3" Grid.Column="1" Source="../assets/outfits/pants_3.png" Width="100" Height="100" MouseDown="PantsImage_MouseDown" local:CroppingHelper.CropRectangle="0,200,150,100"/>
         <Image Grid.Row="3" Grid.Column="2" Source="../assets/outfits/pants_4.png" Width="100" Height="100" MouseDown="PantsImage_MouseDown" local:CroppingHelper.CropRectangle="0,200,150,100"/>
 
-        <Canvas Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" Name="canvas" Width="160" Height="320" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Canvas Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" Name="canvas" Width="150" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Image Name="characterImage" Source="../assets/characters/body_2.png" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Image Name="hatImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Image Name="earringsImage" Stretch="Fill" StretchDirection="UpOnly" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -79,6 +79,7 @@
         <Grid Grid.Row="4" Grid.Column="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -86,11 +87,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Row="0" Grid.Column="0" Content="Silly" Width="70" Height="20" Margin="25px 0px 0px 0px" Click="MoodButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="0" Grid.Column="0" Content="Silly" Width="70" Height="20" Margin="0px 0px 0px 0px" Click="MoodButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
             <Button Grid.Row="0" Grid.Column="1" Content="Serious" Width="70" Height="20" Margin="0px" Click="MoodButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
 
-            <Button Grid.Row="1" Grid.Column="0" Content="Sunny" Width="70" Height="20" Margin="25px 0px 0px 20px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
-            <Button Grid.Row="1" Grid.Column="1" Content="Cold" Width="70" Height="20" Margin="0px 0px 0px 20px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="1" Grid.Column="0" Content="Sunny" Width="70" Height="20" Margin="0px 0px 0px 0px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="Cold" Width="70" Height="20" Margin="0px 0px 0px 0px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
+
+            <TextBlock x:Name="stateTextBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" VerticalAlignment="Top"/>
+
         </Grid>
 
     </Grid>

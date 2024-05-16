@@ -56,7 +56,8 @@ namespace DressUpGame
         //Add showing mood and weather
         private void HintButton_Click(object sender, RoutedEventArgs e)
         {
-            InfoWindow hintWindow = new($"Your style has to be {facade.GetCurrentEventStyle()}!! Please!!!\nAlso important notes:\n\nwhen you choose hat - it also automatically chooses earrings and shoes that are can be +1 point!\nand when you're choosing mood or weather, it will be counted in score no matter are you dressed or not, but description will be changed only if necessary clothes are worn");
+            string moodDescription = facade.GetMood() + " " + facade.GetWeather();
+            InfoWindow hintWindow = new($"Your style has to be {facade.GetCurrentEventStyle()}!! |{moodDescription}| Please!!!\nAlso important notes:\n\nwhen you choose hat - it also automatically chooses earrings and shoes that are can be +1 point!\nand when you're choosing mood or weather, it will be counted in score no matter are you dressed or not, but description will be changed only if necessary clothes are worn");
             hintWindow.ShowDialog();
         }
 
