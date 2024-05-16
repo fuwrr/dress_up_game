@@ -51,6 +51,15 @@ namespace DressUpGame.controls
         {
             events = new List<ClothingEvent>
             {
+                //events without weather and mood
+                new ClothingEvent("Seeing Okscana Dmytrivna", "You want to look as smart as possible, but balance on dorky side too", ClothingStyle.Formal, 0, 0),
+                new ClothingEvent("Attending your wedding", "Actually you don't have time to be fancy or feel overwhelmed", ClothingStyle.Casual, 0, 0),
+                new ClothingEvent("Going to give a lecture on behaviour to your niece", "You have to look older and colder, despite the weather.", ClothingStyle.Cool, 0, 0),
+                new ClothingEvent("Going to adoption centre for a cat", "You want to slightly impress your new buddy on this winter sunny day.", ClothingStyle.Formal, 0, 0),
+                new ClothingEvent("Going to take out a loan at the bank", "Better not be looking too rich or too cool.", ClothingStyle.Casual, 0, 0),
+                new ClothingEvent("Going to bless the Easter bread", "Don't look like a fool and dress only cool! But не забудь шапку!", ClothingStyle.Cool, 0, 0),
+
+                //events with weather and mood
                 /*new ClothingEvent("Seeing Okscana Dmytrivna", "You want to look as smart as possible, but balance on dorky side too", ClothingStyle.Formal, 0, MoodFlags.Silly|MoodFlags.Serious),
                 new ClothingEvent("Attending your wedding", "Actually you don't have time to be fancy or feel overwhelmed", ClothingStyle.Casual, 0, MoodFlags.Silly),
                 new ClothingEvent("Going to give a lecture on behaviour to your niece", "You have to look older and colder, despite the weather.", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Serious),
@@ -65,7 +74,7 @@ namespace DressUpGame.controls
                 new ClothingEvent("Silly And Sunny", " ", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Silly),
                 new ClothingEvent("Silly And Serious And Sunny", " ", ClothingStyle.Cool, WeatherFlags.Sunny, MoodFlags.Silly|MoodFlags.Serious),
                 new ClothingEvent("Silly And Serious And Sunny And Cold", " ", ClothingStyle.Cool, WeatherFlags.Sunny|WeatherFlags.Cold, MoodFlags.Silly|MoodFlags.Serious)*/
-                new ClothingEvent("Casual event", "No weather or mood", ClothingStyle.Casual, 0, 0),
+                //new ClothingEvent("Casual event", "No weather or mood", ClothingStyle.Casual, 0, 0),
             };
         }
 
@@ -547,7 +556,7 @@ namespace DressUpGame.controls
             {
                 facade.state = new TenseState();
                 Debug.WriteLine("Entering Tense State");
-                InfoWindow tenseInfo = new("Entering Tense State!! CLOSE WINDOW, THE CLOCK'S TICKING");
+                InfoWindow tenseInfo = new("Entering Tense State!!\nRandom weather or mood was applied! Guess!\nCLOSE WINDOW, THE CLOCK'S TICKING");
                 tenseInfo.ShowDialog();
                 facade.IntroduceDifficulty();
             }
@@ -562,7 +571,7 @@ namespace DressUpGame.controls
             {
                 facade.state = new RiskyState();
                 Debug.WriteLine("Entering Risky State");
-                InfoWindow tenseInfo = new("Entering RISKY State!! CLOSE WINDOW, THE CLOCK'S TICKING");
+                InfoWindow tenseInfo = new("Entering RISKY State!!\nRandom weather or mood was applied AGAIN! Guess!\nCLOSE WINDOW, THE CLOCK'S TICKING");
                 tenseInfo.ShowDialog();
                 facade.IntroduceDifficulty();
             }

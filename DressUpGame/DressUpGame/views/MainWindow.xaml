@@ -93,7 +93,12 @@
             <Button Grid.Row="1" Grid.Column="0" Content="Sunny" Width="70" Height="20" Margin="0px 0px 0px 0px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
             <Button Grid.Row="1" Grid.Column="1" Content="Cold" Width="70" Height="20" Margin="0px 0px 0px 0px" Click="WeatherButton_Click" Cursor="Hand" Style="{StaticResource RedButtonWithYellowText}"/>
 
-            <TextBlock x:Name="stateTextBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" VerticalAlignment="Top"/>
+            <!--<TextBlock x:Name="stateTextBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Center" VerticalAlignment="Top"/>-->
+            <ComboBox x:Name="myComboBox" SelectedIndex="1" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Height="20px">
+                <ComboBoxItem Content="Pixel" />
+                <ComboBoxItem Content="Forest" />
+                <ComboBoxItem Content="Frog" />
+            </ComboBox>
 
         </Grid>
 
